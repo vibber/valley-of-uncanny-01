@@ -142,7 +142,7 @@
 		                <div id="modal-content">
 		                    <div id="modal-body">
 		                    <p>You can click and drag in the window to change your angle of view</p>
-		                    <button id="toggler" class="showing">Start music</button>
+		                    <button id="toggler" class="showing">OK</button>
 		                    </div>
 		                </div>
 		            </td>
@@ -150,7 +150,7 @@
 		    </tbody>
 		</table>
 
-		<script src="js/libs/three66.js"></script>
+		<script src="js/libs/three66.min.js"></script>
 		<script src="js/loaders/BinaryLoader.js"></script>
 		<script src="js/libs/stats.min.js"></script>
 		<script src="js/libs/jquery-1.11.0.min.js"></script>
@@ -202,17 +202,6 @@
 			var FPS = 30;
 			var clock, startTime, currentFrame;
 
-			////////
-
-			$('#toggler').click( 
-				function(){
-					if ($('#toggler').hasClass('showing')){
-					 	$('#modal').css("display","none");
-					 	$("audio")[0].play(); //Start the music and animation
-					}
-				}
-			);
-
 
 			////////
 			// SLIIDER
@@ -257,6 +246,8 @@
 				selectMidi: { type: "dropdown", label: "Select midi input", options: valuesForMidiInput, onChange: changeMidiInput }
 		    }
 
+			////////
+
 		    detectWebGL();
 
 			function detectWebGL() {
@@ -270,6 +261,15 @@
 					init();
 				}
 			}
+
+			$('#toggler').click( 
+				function(){
+					if ($('#toggler').hasClass('showing')){
+					 	$('#modal').css("display","none");
+					 	$("audio")[0].play(); //Start the music and animation
+					}
+				}
+			);
 
 			function init() {
 
