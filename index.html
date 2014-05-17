@@ -38,7 +38,7 @@
 				position: relative; 
 				width: 300px;
 				float:right;
-				margin-right: 150px;
+				margin-right: 200px;
 			}
 
 			#title {
@@ -63,7 +63,7 @@
 			    height: 100%;   
 			}
 
-			#modal
+			.modalclass
 			{
 			    position: fixed;
 			    top: 0;
@@ -72,39 +72,45 @@
 			    width: 100%;
 			    background: red;
 			    z-index:999;
+				display: none;
 			}
 
-			#modal-tbody, #modal-tr, #modal-td
+			.modal-tbody, #modal-tr, #modal-td
 			{
 			    height: 100%;
 			}
 
-			#modal-td
+			.modal-td
 			{
 			    vertical-align: middle;
 			}
 
-			#modal-content
+			.modal-content
 			{
 				font-size: 10pt;
 			    position: relative;
 			    left: 100%;
 			    height: auto;
 			    width: 50%; 
-			    max-width: 500px;
-			    min-width: 80px;
-			    max-height: 80%;
-			    min-height: 80px;
 			    margin: 0 auto;
-			    border: 1px solid;
+			    border: 0px solid;
 			    background: #333333;
 			    overflow: auto;
 			    padding: 20px;
 			}
 
-		#modal
-			{
-				display: none;
+			#modal .modal-content {
+				max-width: 500px;
+			    min-width: 80px;
+			    max-height: 80%;
+			    min-height: 80px;
+			}
+
+			#modalend .modal-content {
+				max-width: 500px;
+			    min-width: 80px;
+			    max-height: 80%;
+			    min-height: 140px;
 			}
 
 		</style>
@@ -143,14 +149,42 @@
 			</div>
 		</div>
 
-		<table id="modal">
-		    <tbody id="modal-tbody">
-		        <tr id="modal-tr">
-		            <td id="modal-td">
-		                <div id="modal-content">
-		                    <div id="modal-body">
+		<table id="modal" class="modalclass">
+		    <tbody class="modal-tbody">
+		        <tr class="modal-tr">
+		            <td class="modal-td">
+		                <div class="modal-content">
+		                    <div class="modal-body">
 		                    <p>You can click and drag in the window to change your angle of view</p>
 		                    <button id="toggler" class="showing">OK</button>
+		                    </div>
+		                </div>
+		            </td>
+		        </tr>
+		    </tbody>
+		</table>
+
+
+		<table id="modalend" class="modalclass">
+		    <tbody class="modal-tbody">
+		        <tr class="modal-tr">
+		            <td class="modal-td">
+		                <div class="modal-content">
+		                    <div class="modal-body">
+		                    <p>Thank you for watching and listening :-)</p>
+		                    <p><!-- AddThis Follow BEGIN -->
+							<p>Follow me</p>
+							<div class="addthis_toolbox addthis_32x32_style addthis_default_style">
+							<a class="addthis_button_facebook_follow" addthis:userid="udart"></a>
+							<a class="addthis_button_twitter_follow" addthis:userid="vibeke_udart"></a>
+							<a class="addthis_button_vimeo_follow" addthis:userid="udart"></a>
+							<a class="addthis_button_instagram_follow" addthis:userid="vibeke_udart"></a>
+							<a class="addthis_button_rss_follow" addthis:userid="www.udart.dk/feed/"></a>
+							</div>
+							<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536ccdfd11ef48ca"></script>
+							<!-- AddThis Follow END -->
+							</p>
+		                    <button id="togglerend" class="showing">OK</button>
 		                    </div>
 		                </div>
 		            </td>
@@ -208,7 +242,9 @@
 
 
 			var FPS = 30;
-			var clock, startTime, currentFrame;
+			var clock, startTime, currentFrame = 0;
+
+			var audioDuration = 0;
 
 
 			////////
@@ -270,11 +306,21 @@
 				}
 			}
 
+			//When OK button in start modal overlay is clicked
 			$('#toggler').click( 
 				function(){
 					if ($('#toggler').hasClass('showing')){
 					 	$('#modal').css("display","none");
 					 	$("audio")[0].play(); //Start the music and animation
+					}
+				}
+			);
+
+			//End modal overlay
+			$('#togglerend').click( 
+				function(){
+					if ($('#togglerend').hasClass('showing')){
+					 	$('#modalend').css("display","none");
 					}
 				}
 			);
@@ -293,7 +339,12 @@
 
 				clock = new THREE.Clock();
 
-				//
+				// AUDIO
+
+				$("audio")[0].addEventListener("loadedmetadata", function(_event) {
+    				audioDuration = $("audio")[0].duration;
+
+				});
 
 				//Fix for Retina screen - FXAA needs this?
 				dpr = 1;
@@ -586,14 +637,19 @@
 
 				currentFrame = Math.round( $("audio")[0].currentTime * FPS );
 
+				//Check if audio track has reached the end (10 sek before end of the file)
+				if ( audioDuration == 0 || $("audio")[0].currentTime < (audioDuration - 12)) {
 
-				///////////
-				// ANIMATION LOOP
+					///////////
+					// ANIMATION LOOP
 
-				requestAnimationFrame( animate );
-				render();
+					requestAnimationFrame( animate );
+					render();
 
-				if ( statsEnabled ) stats.update();
+					if ( statsEnabled ) stats.update();
+				} else {
+					$('#modalend').css("display","table");
+				}
 
 			}
 
@@ -670,7 +726,8 @@
 		        {'service': 'facebook', 'id': 'udart'},
 		        {'service': 'twitter', 'id': 'vibeke_udart'},
 		        {'service': 'vimeo', 'id': 'udart'},
-		        {'service': 'instagram', 'id': 'vibeke_udart'}
+		        {'service': 'instagram', 'id': 'vibeke_udart'},
+        		{'service': 'rss', 'id': 'http://www.udart.dk/feed/'}
 		      ]
 		    }   
 		  });
