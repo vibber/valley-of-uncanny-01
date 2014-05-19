@@ -689,6 +689,7 @@
 					if ( statsEnabled ) stats.update();
 				} else {
 					$('#modalend').css("display","table");
+					ga('send', 'event', 'audio', 'ended', 'end of audio reached');
 				}
 
 			}
