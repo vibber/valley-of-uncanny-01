@@ -322,6 +322,7 @@
 			function detectWebGL() {
 				if ( ! Detector.webgl )  {
 					Detector.addGetWebGLMessage();
+					ga('send', 'event', 'webgl', 'none', 'no webgl');
 					$("#oldie").css("position","absolute")
 					.css("margin","15em auto 0px")
 					.css("padding", "3em");
@@ -662,6 +663,8 @@
 				// AUDIO
 
 				$("audio")[0].play();
+				ga('send', 'event', 'audio', 'play', 'audio started playing');
+
 
 
 				//////////
